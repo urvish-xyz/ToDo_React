@@ -1,7 +1,7 @@
 # steps to start any javascript project
 
-- start npm project with following command `npm init`
-- install webpack with `npm i -D webpack webpack-cli`
+- clone this repo with `git clone https://github.com/urvish-xyz/ToDo_React.git`
+<!-- - install webpack with `npm i -D webpack webpack-cli`
 - create webpack.config.js file
 - create entry and output section from [webpack website](https://webpack.js.org/concepts/)
 - add script in package.json file
@@ -105,8 +105,9 @@ devServer: {
 - add preset rule in babel using `npm i -D @babel/preset-react`
   now your preset look like following
 
-  ```json
+  ````json
   {
     "presets": ["@babel/preset-env", "@babel/preset-react"]
   }
-  ```
+  ``` -->
+  ````
