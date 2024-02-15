@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -16,24 +16,31 @@ import {
 
 export default class Home extends Component {
   state = {
-    todoText: '',
+    // todoText: '',
+    filterType: 'all',
     todoList: [],
   };
 
-  changeText = event => {
-    // console.log(event.target.value);
-    this.setState({ todoText: event.target.value });
-  };
+  inputRef = createRef();
 
   addTodo = event => {
+    const inputValue = this.inputRef.current;
     event.preventDefault();
-    this.setState(({ todoText, todoList }) => ({
-      todoList: [
-        ...todoList,
-        { id: new Date().valueOf(), text: todoText, isDone: false },
-      ],
-      todoText: '',
-    }));
+    this.setState(
+      ({ todoList }) => ({
+        todoList: [
+          ...todoList,
+          {
+            id: new Date().valueOf(),
+            text: inputValue.value,
+            isDone: false,
+          },
+        ],
+      }),
+      () => {
+        inputValue.value = '';
+      },
+    );
   };
 
   toggleComplete = item => {
@@ -59,8 +66,13 @@ export default class Home extends Component {
     });
   };
 
+  changeFilterType = filterType => {
+    this.setState({ filterType });
+  };
+
   render() {
-    const { todoText, todoList } = this.state;
+    console.log('render');
+    const { todoList, filterType } = this.state;
 
     return (
       <div className="relative flex flex-col items-center min-h-screen gap-4">
@@ -71,8 +83,9 @@ export default class Home extends Component {
         >
           <Input
             className="rounded-r-none"
-            value={todoText}
-            onChange={this.changeText}
+            ref={this.inputRef}
+            // value={todoText}
+            // onChange={this.changeText}
             required
           />
           <Button type="submit" className="rounded-l-none">
@@ -80,44 +93,74 @@ export default class Home extends Component {
           </Button>
         </form>
         <div className="flex flex-col flex-1 w-full gap-6 p-6">
-          {todoList.map(item => (
-            <div key={item.id} className="flex items-center">
-              <Checkbox
-                checked={item.isDone}
-                onCheckedChange={() => this.toggleComplete(item)}
-              />
-              <p className="flex-1 px-4">{item.text}</p>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button>Delete</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you sure you want to delete?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your account and remove your data from our servers.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => this.deleteTodo(item)}>
-                      Confirm
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          ))}
+          {todoList.map(item => {
+            if (
+              filterType === 'all' ||
+              (filterType === 'pending' && item.isDone === false) ||
+              (filterType === 'completed' && item.isDone === true)
+            ) {
+              return (
+                <div key={item.id} className="flex items-center">
+                  <Checkbox
+                    checked={item.isDone}
+                    onCheckedChange={() => this.toggleComplete(item)}
+                  />
+                  <p
+                    className={`flex-1 px-4 ${item.isDone === true && 'line-through'}`}
+                  >
+                    {item.text}
+                  </p>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button>Delete</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you sure you want to delete?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete ?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => this.deleteTodo(item)}
+                        >
+                          Confirm
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              );
+            }
+            return null;
+          })}
         </div>
         <div className="absolute bottom-0 flex w-full">
-          <Button className="flex-1 rounded-none" variant="destructive">
+          <Button
+            className="flex-1 rounded-none"
+            variant={filterType === 'all' ? 'destructive' : 'default'}
+            onClick={() => this.changeFilterType('all')}
+          >
             All
           </Button>
-          <Button className="flex-1 rounded-none">Pending</Button>
-          <Button className="flex-1 rounded-none">Completed</Button>
+          <Button
+            className="flex-1 rounded-none"
+            variant={filterType === 'pending' ? 'destructive' : 'default'}
+            onClick={() => this.changeFilterType('pending')}
+          >
+            Pending
+          </Button>
+          <Button
+            className="flex-1 rounded-none"
+            variant={filterType === 'completed' ? 'destructive' : 'default'}
+            onClick={() => this.changeFilterType('completed')}
+          >
+            Completed
+          </Button>
         </div>
       </div>
     );
