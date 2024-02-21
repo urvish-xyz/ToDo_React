@@ -1,0 +1,19 @@
+{
+  "todoList": [
+    {
+      "id": "b568",
+      "text": "Learn JavaScript",
+      "isDone": false
+    },
+    {
+      "id": "1840",
+      "text": "Learn React",
+      "isDone": false
+    },
+    {
+      "id": "597c",
+      "text": "Learn Node JS",
+      "isDone": false
+    }
+  ]
+}
