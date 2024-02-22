@@ -32,7 +32,7 @@ export default class Home extends Component {
       const json = await res.json();
       this.setState({ todoList: json });
     } catch (error) {
-      console.log('error on ', error);
+      // console.log('error on ', error);
     }
   };
 
@@ -64,7 +64,7 @@ export default class Home extends Component {
         },
       );
     } catch (error) {
-      alert('error on ', error);
+      // alert('error on ', error);
     }
   };
 
@@ -94,7 +94,9 @@ export default class Home extends Component {
           ],
         };
       });
-    } catch (error) {}
+    } catch (error) {
+      // console.log(error);
+    }
   };
 
   deleteTodo = async item => {
@@ -109,7 +111,9 @@ export default class Home extends Component {
           todoList: [...todoList.slice(0, index), ...todoList.slice(index + 1)],
         };
       });
-    } catch (error) {}
+    } catch (error) {
+      // console.log(error);
+    }
   };
 
   changeFilterType = filterType => {
@@ -117,7 +121,7 @@ export default class Home extends Component {
   };
 
   render() {
-    console.log('render');
+    // console.log('render');
     const { todoList, filterType } = this.state;
 
     return (
